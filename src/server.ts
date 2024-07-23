@@ -33,12 +33,30 @@ io.on('connection', (socket) => {
         socketId: socket.id,
     })
 
-    socket.on('create-something', (msg) => {
-        console.log('message: ' + msg)
+    socket.on('chat message', async (msg, clientOffset) => {
+        let result
+        try {
+            console.log('msg', msg)
+            console.log('clientOffset', clientOffset)
+            // result = await db.run(
+            //     'INSERT INTO messages (content, client_offset) VALUES (?, ?)',
+            //     msg,
+            //     clientOffset,
+            // )
+        } catch (e) {
+            if (e.errno === 19 /* SQLITE_CONSTRAINT */) {
+            } else {
+                // nothing to do, just let the client retry
+            }
+            return
+        }
+        io.to(socket.id).emit('chat message', msg, '')
     })
+
     socket.on('disconnect', () => {
         console.log('user disconnected')
     })
 })
+io.sockets.emit('create-something', 'everyone')
 
 export default server
