@@ -24,3 +24,13 @@ model User {
   isActive Boolean   @default(true)
 
 }
+
+
+model Message {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  message   String
+  senderId  String
+  receiverId String
+}
